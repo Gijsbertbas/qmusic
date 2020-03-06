@@ -1,0 +1,46 @@
+# In addition to the conda environment I installed the following linux packages
+# qrencode following the installation instructions in:
+https://fukuchi.org/works/qrencode/
+# which requires libpng and zlib
+sudo apt-get install libpng-dev zlib1g-dev
+sudo apt-get install libsdl2-2.0
+# webkit2png - https://github.com/adamn/python-webkit2png
+apt-get install python-qt4 libqt4-webkit xvfb
+pip install webkit2png
+## webkit2png is old, python2, couldn't get it to work
+sudo apt-get install wkhtmltopdf
+pip install pdfkit
+pip install beautifulsoup4
+
+# experimenting with websocket.io api
+pip install "python-socketio[client]" # couldn't get this to work??
+pip install socketIO-client # success!
+
+# to mount a network location:
+sudo apt-get install cifs-utils smbclient
+# check locations:
+sudo smbclient -L 19.168.178.13
+sudo mkdir /mnt/pinas
+sudo mount //192.168.178.13/PINAS /mnt/pinas -o username=nasuser,password=????
+sudo mkdir /mnt/gijstereo
+sudo mount //192.168.178.59/USB /mnt/gijstereo/
+
+# get spotify access
+pip install spotipy
+
+##############
+#### TODO ####
+##############
+
+qren:
+x implement album
+x implement spotify track
+x implement spotify album
+x implement flac files
+x resize cards
+x add cleaning option output folder
+x put path definitions in init
+> run qren on server??
+> create more cards
+x fix hardware for qrplayer
+x add buttons and led

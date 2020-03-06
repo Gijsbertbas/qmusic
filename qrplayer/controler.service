@@ -1,0 +1,12 @@
+[Unit]
+Description=My system controler
+After=multi-user.target
+
+[Service]
+Type=simple
+User=root
+KillSignal=SIGINT
+ExecStart=/usr/bin/python3 /home/gijs/controler.py
+
+[Install]
+WantedBy=multi-user.target

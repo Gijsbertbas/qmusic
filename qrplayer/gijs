@@ -1,0 +1,5 @@
+Cmnd_Alias CONTROLSERVICE = \
+    /bin/systemctl stop qrplayer.service,\
+    /sbin/shutdown
+
+gijs ALL = NOPASSWD: CONTROLSERVICE

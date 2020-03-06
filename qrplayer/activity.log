@@ -1,0 +1,76 @@
+# assemble a pi (zero) with camera
+# activate the camera
+sudo raspi-config
+# check if camera is detected:
+sudo vcgencmd get_camera
+# install zbar which performs the scanning
+sudo apt-get install zbar-tools
+# zbar appears to work fine with the Broadcom V4L2 driver which comes pre-installed?
+# start driver from terminal:
+sudo modprobe bcm2835-v4l2
+# now add 'bcm2835-v4l2' to /etc/modules which makes it load on boot
+# for zbar to get permission to the camera, I had to chmod on the video0 device:
+sudo chmod 666 /dev/video0
+# then I found that the permissions were overwritten every boot
+# instead: add the user to the video group
+sudo usermod -aG video your_username
+# test zbar:
+zbarcam -v --nodisplay --prescale=300x200
+# prepared the python requirements:
+sudo apt-get install python3-pip
+pip3 install socketIO-client
+# Start on boot
+# adding to rc.local failed, could be due to many things:
+# - boot sequence not clear, perhaps camera was not mounted, network not available etc.
+# - libraries not found? don't know what user was used to run the script
+# - ...
+# problem is there is no traceback
+# success via systemd following https://www.raspberrypi-spy.co.uk/2015/10/how-to-autorun-a-python-script-on-boot-using-systemd/
+# created:
+sudo nano /lib/systemd/system/qrplayer.service
+# with content:
+[Unit]
+Description=My QR player
+After=multi-user.target
+
+[Service]
+Type=simple
+KillSignal=SIGINT
+User=gijs
+ExecStart=/usr/bin/python3 /home/gijs/qrplay.py
+
+[Install]
+WantedBy=multi-user.target
+# then performed:
+sudo chmod 644 /lib/systemd/system/qrplayer.service
+sudo systemctl daemon-reload
+sudo systemctl enable qrplayer.service
+# commands:
+sudo systemctl start qrplayer.service
+sudo systemctl status qrplayer.service
+sudo systemctl stop qrplayer.service
+
+# START PLAYING WITH BUTTON SETUP
+# installed gpio-zero
+sudo apt-get install python3-gpiozero
+# need to run python as root to access the gpio pins
+sudo python3
+# created a controler service
+sudo nano /lib/systemd/system/controler.service
+# same settings as qrplayer.service (see above)
+# then had to give no password power to the systemctl and shutdown commands in controler.py
+# to do so, I added a file in /etc/sudoers.d/ named gijs (see file in this folder)
+# give right permissions to the file:
+sudo chmod 0440 /etc/sudoers.d/gijs
+# installed mosquitto clients
+sudo apt-get install mosquitto-clients
+
+# using raspistill to test the field of view:
+raspistill -t 1 -o pictures/capture.jpg
+
+# fixing locale issues:
+sudo apt-get install locales
+dpkg-reconfigure locales
+
+# fixing /bin/sh not found issues:
+https://superuser.com/questions/948862/linux-sh-script-throws-bin-sh-not-found
