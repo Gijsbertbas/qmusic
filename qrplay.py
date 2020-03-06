@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
+import logging
 from logger import qrplayer_logger as logger
 import os
-from pprint import pprint
 import subprocess
 from time import sleep
 
@@ -28,7 +28,7 @@ class VolumioControler:
         self.playload = None
 
         if not logger:
-            logger = initiatelogger()
+            logger = logging.getLogger()
 
         # if the Volumio host is not available, wait 5 seconds and try again
         # current timeout is 30 seconds
